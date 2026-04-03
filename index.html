@@ -7,14 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0b1a2d; color: white; font-family: 'Inter', sans-serif; user-select: none; }
+        body { background-color: #0b1a2d; color: white; font-family: sans-serif; user-select: none; }
         .page { display: none; min-height: 100vh; padding-bottom: 80px; }
         .active-page { display: block; }
-        .grid-cell { background: #1c2c3e; border-radius: 12px; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 45px; transition: 0.2s; }
-        .grid-cell:active { transform: scale(0.95); }
-        .nav-btn { color: #64748b; font-size: 10px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .grid-cell { background: #1c2c3e; border-radius: 12px; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 45px; transition: 0.2s; cursor: pointer; }
+        .nav-btn { color: #64748b; font-size: 10px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; }
         .nav-btn.active { color: #4fd1c5; }
-        .btn-gradient { background: linear-gradient(90deg, #14b8a6 0%, #0d9488 100%); }
+        .win-highlight { background: #14b8a6 !important; color: white !important; }
     </style>
 </head>
 <body>
@@ -23,9 +22,9 @@
     <div id="home" class="page active-page p-5">
         <div class="flex justify-between items-center mb-6">
             <div class="flex gap-6 text-center">
-                <div><p class="text-[10px] text-gray-400">YOU</p><p class="text-xl font-bold" id="userScore">0</p></div>
+                <div><p class="text-[10px] text-gray-400 uppercase">You (X)</p><p class="text-xl font-bold text-teal-400" id="userScore">0</p></div>
                 <div class="text-gray-600 font-bold">VS</div>
-                <div><p class="text-[10px] text-gray-400">ROBOT</p><p class="text-xl font-bold" id="botScore">0</p></div>
+                <div><p class="text-[10px] text-gray-400 uppercase">Robot (O)</p><p class="text-xl font-bold text-red-400" id="botScore">0</p></div>
             </div>
             <div class="bg-blue-900/30 border border-blue-500/50 px-4 py-2 rounded-full flex items-center gap-2">
                 <i class="fas fa-gem text-blue-400"></i>
@@ -33,92 +32,74 @@
             </div>
         </div>
 
-        <div class="flex bg-black/20 p-1 rounded-xl mb-8">
-            <button class="flex-1 py-2 rounded-lg bg-teal-500 text-xs font-bold">EASY</button>
-            <button class="flex-1 py-2 rounded-lg text-xs font-bold opacity-40">MEDIUM</button>
-            <button class="flex-1 py-2 rounded-lg text-xs font-bold opacity-40">HARD</button>
+        <div class="grid grid-cols-3 gap-3 mb-10" id="board">
+            <div class="grid-cell" data-index="0" onclick="playerTap(0)"></div>
+            <div class="grid-cell" data-index="1" onclick="playerTap(1)"></div>
+            <div class="grid-cell" data-index="2" onclick="playerTap(2)"></div>
+            <div class="grid-cell" data-index="3" onclick="playerTap(3)"></div>
+            <div class="grid-cell" data-index="4" onclick="playerTap(4)"></div>
+            <div class="grid-cell" data-index="5" onclick="playerTap(5)"></div>
+            <div class="grid-cell" data-index="6" onclick="playerTap(6)"></div>
+            <div class="grid-cell" data-index="7" onclick="playerTap(7)"></div>
+            <div class="grid-cell" data-index="8" onclick="playerTap(8)"></div>
         </div>
-
-        <div class="grid grid-cols-3 gap-3 mb-8" id="board">
-            <div class="grid-cell" onclick="gameMove(0)"></div>
-            <div class="grid-cell" onclick="gameMove(1)"></div>
-            <div class="grid-cell" onclick="gameMove(2)"></div>
-            <div class="grid-cell" onclick="gameMove(3)"></div>
-            <div class="grid-cell" onclick="gameMove(4)"></div>
-            <div class="grid-cell" onclick="gameMove(5)"></div>
-            <div class="grid-cell" onclick="gameMove(6)"></div>
-            <div class="grid-cell" onclick="gameMove(7)"></div>
-            <div class="grid-cell" onclick="gameMove(8)"></div>
-        </div>
-
-        <div class="flex justify-center gap-3">
-            <div class="bg-teal-500/10 border border-teal-500/30 text-teal-400 px-6 py-2 rounded-full text-sm">✕ YOU</div>
-            <div class="bg-gray-800 text-gray-500 px-6 py-2 rounded-full text-sm">○ ROBOT</div>
-        </div>
+        
+        <p id="gameStatus" class="text-center text-gray-400 font-bold uppercase tracking-widest text-sm"></p>
     </div>
 
     <!-- 2. TASKS PAGE -->
     <div id="tasks" class="page p-5">
-        <h2 class="text-2xl font-bold mb-2">Tasks</h2>
-        <p class="text-gray-400 text-sm mb-6">Complete tasks to earn TON rewards</p>
-        <div class="space-y-3">
+        <h2 class="text-2xl font-bold mb-6">Tasks</h2>
+        <div class="space-y-4">
+            <!-- Task 1 -->
             <div class="bg-gray-800/40 border border-gray-700 p-4 rounded-2xl flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center"><i class="fab fa-telegram"></i></div>
-                    <div><p class="text-sm font-bold">OX TON Channel</p><p class="text-xs text-teal-400">+0.001 TON</p></div>
+                    <div><p class="text-sm font-bold">Join OX TON Channel</p><p class="text-xs text-teal-400">+0.001 TON</p></div>
                 </div>
-                <button class="bg-white text-black px-5 py-1 rounded-lg font-bold text-xs">START</button>
+                <a href="https://t.me/oxtonchannel" target="_blank" class="bg-white text-black px-5 py-1 rounded-lg font-bold text-xs">JOIN</a>
+            </div>
+            <!-- Task 2 -->
+            <div class="bg-gray-800/40 border border-gray-700 p-4 rounded-2xl flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center"><i class="fas fa-users"></i></div>
+                    <div><p class="text-sm font-bold">Join OX TON Group</p><p class="text-xs text-teal-400">+0.001 TON</p></div>
+                </div>
+                <a href="https://t.me/oxtongp" target="_blank" class="bg-white text-black px-5 py-1 rounded-lg font-bold text-xs">JOIN</a>
             </div>
         </div>
     </div>
 
     <!-- 3. WALLET PAGE -->
-    <div id="wallet" class="page p-5">
-        <h2 class="text-2xl font-bold mb-6">Wallet</h2>
-        <div class="bg-gray-800/40 border border-gray-700 rounded-3xl p-8 text-center mb-6">
-            <i class="fas fa-gem text-blue-400 text-5xl mb-4"></i>
-            <h1 class="text-5xl font-bold mb-2">0.0025</h1>
-            <p class="text-gray-400 font-bold mb-6">TON</p>
-            <div class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-[10px] py-2 px-4 rounded-lg mb-6">
-                ⚠ Minimum withdraw amount 0.05 TON
-            </div>
-            <button class="w-full btn-gradient text-white font-bold py-4 rounded-2xl flex justify-between px-6 mb-3">
-                <span><i class="fas fa-download mr-2"></i> Withdraw</span>
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            <button class="w-full bg-gray-700/50 text-gray-300 font-bold py-4 rounded-2xl flex justify-between px-6">
-                <span><i class="fas fa-history mr-2"></i> History</span>
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- 4. INVITE PAGE -->
-    <div id="invite" class="page p-5 text-center">
-        <h2 class="text-2xl font-bold mb-8">Invite Friends</h2>
-        <div class="bg-gray-800/40 border border-gray-700 rounded-3xl p-6 mb-4">
-            <p class="text-sm text-gray-400 mb-4">Your Invite Link</p>
-            <div class="bg-black/30 p-3 rounded-xl border border-dashed border-gray-600 text-xs text-teal-400 break-all mb-4">
-                https://t.me/OxTonBot?start=user123
-            </div>
-            <div class="flex gap-2">
-                <button class="flex-1 bg-teal-500/20 text-teal-400 font-bold py-3 rounded-xl border border-teal-500/30">Copy Link</button>
-                <button class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl">Share</button>
-            </div>
-        </div>
+    <div id="wallet" class="page p-5 text-center">
+        <h2 class="text-2xl font-bold mb-10">Wallet</h2>
+        <i class="fas fa-gem text-blue-400 text-6xl mb-4"></i>
+        <h1 class="text-5xl font-bold mb-2 tracking-tight" id="walletBalance">0.0025</h1>
+        <p class="text-gray-400 font-bold mb-10">TON</p>
+        <button class="w-full bg-teal-500 text-black font-bold py-4 rounded-2xl flex justify-between px-6 opacity-50">
+            <span>Withdraw</span><i class="fas fa-chevron-right"></i>
+        </button>
     </div>
 
     <!-- BOTTOM NAV -->
-    <nav class="fixed bottom-0 w-full bg-[#0b1a2d] border-t border-gray-800 flex py-3 px-2">
-        <button onclick="navTo('home')" class="nav-btn active" id="n-home"><i class="fas fa-home text-lg"></i>HOME</button>
+    <nav class="fixed bottom-0 w-full bg-[#0b1a2d] border-t border-gray-800 flex py-3">
+        <button onclick="navTo('home')" class="nav-btn active" id="n-home"><i class="fas fa-gamepad text-lg"></i>HOME</button>
         <button onclick="navTo('tasks')" class="nav-btn" id="n-tasks"><i class="fas fa-tasks text-lg"></i>TASKS</button>
         <button onclick="navTo('wallet')" class="nav-btn" id="n-wallet"><i class="fas fa-wallet text-lg"></i>WALLET</button>
-        <button onclick="navTo('invite')" class="nav-btn" id="n-invite"><i class="fas fa-users text-lg"></i>INVITE</button>
     </nav>
 
     <script>
         let board = ["","","","","","","","",""];
-        let isGameOver = false;
+        let userPoints = 0;
+        let botPoints = 0;
+        let balance = 0.0025;
+        let gameActive = true;
+
+        const winPatterns = [
+            [0,1,2], [3,4,5], [6,7,8], // Horizontal
+            [0,3,6], [1,4,7], [2,5,8], // Vertical
+            [0,4,8], [2,4,6]           // Diagonal
+        ];
 
         function navTo(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
@@ -127,26 +108,76 @@
             document.getElementById('n-' + id).classList.add('active');
         }
 
-        function gameMove(idx) {
-            if(board[idx] !== "" || isGameOver) return;
-            
-            const cells = document.querySelectorAll('.grid-cell');
-            board[idx] = "X";
-            cells[idx].innerText = "✕";
-            cells[idx].classList.add('text-teal-400');
-
-            // Robot ရွှေ့မယ် (ရိုးရှင်းအောင်)
-            setTimeout(() => {
-                let empty = board.map((v, i) => v === "" ? i : null).filter(v => v !== null);
-                if(empty.length > 0) {
-                    let move = empty[Math.floor(Math.random() * empty.length)];
-                    board[move] = "O";
-                    cells[move].innerText = "○";
-                    cells[move].classList.add('text-white');
+        function playerTap(i) {
+            if (board[i] === "" && gameActive) {
+                makeMove(i, "X");
+                if (!checkWin("X")) {
+                    gameActive = false;
+                    document.getElementById('gameStatus').innerText = "Robot thinking...";
+                    setTimeout(botMove, 600);
                 }
-            }, 400);
+            }
+        }
+
+        function botMove() {
+            let empty = board.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+            if (empty.length > 0) {
+                let randomIdx = empty[Math.floor(Math.random() * empty.length)];
+                makeMove(randomIdx, "O");
+                checkWin("O");
+                gameActive = true;
+                if(gameActive) document.getElementById('gameStatus').innerText = "";
+            }
+        }
+
+        function makeMove(i, sign) {
+            board[i] = sign;
+            const cell = document.querySelector(`[data-index="${i}"]`);
+            cell.innerText = sign === "X" ? "✕" : "○";
+            cell.classList.add(sign === "X" ? "text-teal-400" : "text-red-400");
+        }
+
+        function checkWin(sign) {
+            for (let p of winPatterns) {
+                if (board[p[0]] === sign && board[p[1]] === sign && board[p[2]] === sign) {
+                    p.forEach(idx => document.querySelector(`[data-index="${idx}"]`).classList.add('win-highlight'));
+                    endGame(sign);
+                    return true;
+                }
+            }
+            if (!board.includes("")) { endGame("draw"); return true; }
+            return false;
+        }
+
+        function endGame(winner) {
+            gameActive = false;
+            if (winner === "X") {
+                userPoints++;
+                balance += 0.0005;
+                document.getElementById('userScore').innerText = userPoints;
+                document.getElementById('gameStatus').innerText = "You Won! +0.0005 TON";
+            } else if (winner === "O") {
+                botPoints++;
+                document.getElementById('botScore').innerText = botPoints;
+                document.getElementById('gameStatus').innerText = "Robot Won!";
+            } else {
+                document.getElementById('gameStatus').innerText = "It's a Draw!";
+            }
+            
+            document.getElementById('mainBalance').innerText = balance.toFixed(4);
+            document.getElementById('walletBalance').innerText = balance.toFixed(4);
+            setTimeout(resetBoard, 2000);
+        }
+
+        function resetBoard() {
+            board = ["","","","","","","","",""];
+            document.querySelectorAll('.grid-cell').forEach(c => {
+                c.innerText = "";
+                c.classList.remove('win-highlight', 'text-teal-400', 'text-red-400');
+            });
+            document.getElementById('gameStatus').innerText = "";
+            gameActive = true;
         }
     </script>
 </body>
-  </html>
-
+</html>
