@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ox TON Pro</title>
+    <title>Ox TON Pro - Bomber Arena</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0b1a2d; color: white; font-family: sans-serif; user-select: none; }
+        body { background-color: #0b1a2d; color: white; font-family: sans-serif; user-select: none; overflow: hidden; }
         .page { display: none; min-height: 100vh; padding-bottom: 90px; }
         .active-page { display: block; }
-        .grid-cell { background: #1c2c3e; border-radius: 12px; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 45px; transition: 0.2s; cursor: pointer; }
         .nav-btn { color: #64748b; font-size: 10px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; }
         .nav-btn.active { color: #4fd1c5; }
         .shop-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 20px; padding: 15px; margin-bottom: 12px; }
-        .vip-tag { background: linear-gradient(90deg, #f59e0b, #d97706); color: white; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
-        .topup-card { background: linear-gradient(135deg, #1d4ed8, #1e40af); border-radius: 20px; padding: 20px; text-align: center; border: 1px solid #3b82f6; }
+        
+        /* Bomber Game Styles */
+        #gameCanvas { background-color: #2c3e50; border: 2px solid #34495e; border-radius: 12px; display: block; margin: 10px auto; touch-action: none; }
+        .controls { display: grid; grid-template-cols: repeat(3, 1fr); gap: 10px; width: 150px; margin: 10px auto; }
+        .control-btn { background: #1c2c3e; border: 1px solid #334155; color: white; padding: 15px; border-radius: 12px; font-size: 18px; text-center: center; }
+        .control-btn:active { background: #25384d; transform: scale(0.95); }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <div class="p-5 flex justify-between items-center sticky top-0 bg-[#0b1a2d] z-10">
+    
+<div class="p-5 flex justify-between items-center sticky top-0 bg-[#0b1a2d] z-10">
         <div class="flex gap-4 text-center">
             <div><p class="text-[9px] text-gray-500 uppercase">You</p><p class="font-bold text-teal-400" id="userScore">0</p></div>
             <div class="text-gray-700 font-bold">|</div>
-            <div><p class="text-[9px] text-gray-500 uppercase">Bot</p><p class="font-bold text-red-400" id="botScore">0</p></div>
+            <div><p class="text-[9px] text-gray-500 uppercase">Status</p><p class="font-bold text-red-400 text-xs" id="gameStatus">PLAYING</p></div>
         </div>
         <div class="bg-blue-900/30 border border-blue-500/40 px-4 py-1.5 rounded-full flex items-center gap-2">
             <i class="fas fa-gem text-blue-400 text-sm"></i>
@@ -33,163 +36,18 @@
         </div>
     </div>
 
-    <!-- HOME PAGE -->
-    <div id="home" class="page active-page p-5">
-        <div class="grid grid-cols-3 gap-3 mb-8 mt-4" id="board">
-            <div class="grid-cell" data-index="0" onclick="playerTap(0)"></div>
-            <div class="grid-cell" data-index="1" onclick="playerTap(1)"></div>
-            <div class="grid-cell" data-index="2" onclick="playerTap(2)"></div>
-            <div class="grid-cell" data-index="3" onclick="playerTap(3)"></div>
-            <div class="grid-cell" data-index="4" onclick="playerTap(4)"></div>
-            <div class="grid-cell" data-index="5" onclick="playerTap(5)"></div>
-            <div class="grid-cell" data-index="6" onclick="playerTap(6)"></div>
-            <div class="grid-cell" data-index="7" onclick="playerTap(7)"></div>
-            <div class="grid-cell" data-index="8" onclick="playerTap(8)"></div>
-        </div>
-        <p id="gameStatus" class="text-center text-gray-500 font-bold text-xs uppercase tracking-widest"></p>
-    </div>
-
-    <!-- STORE PAGE -->
-    <div id="store" class="page p-5">
-        <h2 class="text-xl font-bold mb-5 flex items-center gap-2 text-orange-400"><i class="fas fa-store"></i> Game Shop</h2>
+    
+<div id="home" class="page active-page p-4">
+        <h2 class="text-center text-sm font-bold text-gray-400 uppercase mb-2">Bomber Arena</h2>
         
-        <!-- VIP Card -->
-        <div class="shop-card border-orange-500/30">
-            <div class="flex justify-between items-start mb-3">
-                <div>
-                    <span class="vip-tag uppercase">Special Offer</span>
-                    <h3 class="text-lg font-bold mt-1">VIP PASS (30 Days)</h3>
-                </div>
-                <div class="text-right">
-                    <p class="text-xs text-gray-400 line-through">500 Stars</p>
-                    <p class="text-orange-400 font-bold">250 Stars</p>
-                </div>
-            </div>
-            <ul class="text-[11px] text-gray-400 space-y-1 mb-4">
-                <li><i class="fas fa-check text-teal-500 mr-2"></i> 2x Win Rewards</li>
-                <li><i class="fas fa-check text-teal-500 mr-2"></i> Ad-Free Experience</li>
-                <li><i class="fas fa-check text-teal-500 mr-2"></i> Instant Withdrawal</li>
-            </ul>
-            <button class="w-full bg-orange-500 py-3 rounded-xl font-bold text-sm">BUY WITH STARS</button>
-        </div>
+        <canvas id="gameCanvas" width="320" height="320"></canvas>
 
-        <!-- NEW SINGLE TOPUP CARD -->
-        <h3 class="text-sm font-bold text-gray-500 mb-3 uppercase">Top Up Points</h3>
-        <div class="topup-card shadow-lg shadow-blue-900/30">
-            <div class="flex justify-center mb-3">
-                <div class="bg-blue-400/20 p-3 rounded-full">
-                    <i class="fas fa-gem text-blue-300 text-3xl"></i>
-                </div>
-            </div>
-            <h3 class="text-xl font-bold mb-1">STARTER PACK</h3>
-            <p class="text-blue-200 text-sm mb-4">Get 0.05 TON Instantly</p>
-            <div class="flex justify-between items-center bg-black/20 p-3 rounded-xl mb-4">
-                <span class="text-xs text-gray-300">Price:</span>
-                <span class="font-bold text-white tracking-wide">100 STARS</span>
-            </div>
-            <button class="w-full bg-white text-blue-700 py-3 rounded-xl font-bold text-sm hover:bg-gray-100 transition">PURCHASE NOW</button>
-        </div>
-    </div>
-
-    <!-- TASKS & WALLET REMAIN THE SAME... -->
-    <div id="tasks" class="page p-5">
-        <h2 class="text-xl font-bold mb-6">Tasks</h2>
-        <div class="space-y-3">
-             <div class="shop-card flex justify-between items-center border-gray-700">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center"><i class="fab fa-telegram"></i></div>
-                    <div><p class="text-sm font-bold">Join Channel</p><p class="text-[10px] text-teal-400">+0.001 TON</p></div>
-                </div>
-                <button class="bg-white text-black px-4 py-1.5 rounded-lg font-bold text-[10px]">GO</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="wallet" class="page p-8 text-center">
-        <i class="fas fa-wallet text-blue-400 text-6xl mb-4"></i>
-        <h1 class="text-5xl font-bold mb-1" id="walletBal">0.0025</h1>
-        <p class="text-gray-500 font-bold mb-8 text-sm uppercase">TON Balance</p>
-        <button class="w-full bg-gray-800 text-gray-500 font-bold py-4 rounded-2xl flex justify-between px-6 border border-gray-700 opacity-50">
-            <span>Withdraw Locked</span><i class="fas fa-lock"></i>
-        </button>
-    </div>
-
-    <!-- BOTTOM NAV -->
-    <nav class="fixed bottom-0 w-full bg-[#0b1a2d]/90 backdrop-blur-lg border-t border-gray-800 flex py-3 z-20">
-        <button onclick="navTo('home')" class="nav-btn active" id="n-home"><i class="fas fa-gamepad text-lg"></i>HOME</button>
-        <button onclick="navTo('store')" class="nav-btn" id="n-store"><i class="fas fa-store text-lg"></i>STORE</button>
-        <button onclick="navTo('tasks')" class="nav-btn" id="n-tasks"><i class="fas fa-check-circle text-lg"></i>TASKS</button>
-        <button onclick="navTo('wallet')" class="nav-btn" id="n-wallet"><i class="fas fa-wallet text-lg"></i>WALLET</button>
-    </nav>
-
-    <script>
-        let board = ["","","","","","","","",""];
-        let userP = 0, botP = 0, bal = 0.0025, active = true;
-
-        function navTo(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById(id).classList.add('active-page');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('n-' + id).classList.add('active');
-        }
-
-        function playerTap(i) {
-            if(board[i] === "" && active) {
-                move(i, "X");
-                if(!checkWin("X")) {
-                    active = false;
-                    setTimeout(botMove, 500);
-                }
-            }
-        }
-
-        function botMove() {
-            let empty = board.map((v, i) => v === "" ? i : null).filter(v => v !== null);
-            if(empty.length > 0) {
-                move(empty[Math.floor(Math.random() * empty.length)], "O");
-                checkWin("O");
-                active = true;
-            }
-        }
-
-        function move(i, s) {
-            board[i] = s;
-            const c = document.querySelector(`[data-index="${i}"]`);
-            c.innerText = s === "X" ? "✕" : "○";
-            c.style.color = s === "X" ? "#2dd4bf" : "#f87171";
-        }
-
-        function checkWin(s) {
-            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            for(let p of wins) {
-                if(board[p[0]]==s && board[p[1]]==s && board[p[2]]==s) {
-                    end(s); return true;
-                }
-            }
-            if(!board.includes("")) { end("draw"); return true; }
-            return false;
-        }
-
-        function end(w) {
-            active = false;
-            if(w === "X") { userP++; bal += 0.0005; document.getElementById('gameStatus').innerText = "Winner! +0.0005"; }
-            else if(w === "O") { botP++; document.getElementById('gameStatus').innerText = "Bot Won!"; }
-            else { document.getElementById('gameStatus').innerText = "Draw!"; }
-            
-            document.getElementById('userScore').innerText = userP;
-            document.getElementById('botScore').innerText = botP;
-            document.getElementById('mainBalance').innerText = bal.toFixed(4);
-            document.getElementById('walletBal').innerText = bal.toFixed(4);
-            setTimeout(reset, 1500);
-        }
-
-        function reset() {
-            board = ["","","","","","","","",""];
-            document.querySelectorAll('.grid-cell').forEach(c => c.innerText = "");
-            document.getElementById('gameStatus').innerText = "";
-            active = true;
-        }
-    </script>
-</body>
-</html>
-
+        
+<div class="flex justify-center gap-3 mt-4">
+            <div class="controls">
+                <div></div>
+                <button class="control-btn" onclick="movePlayer(0, -1)"><i class="fas fa-arrow-up"></i></button>
+                <div></div>
+                <button class="control-btn" onclick="movePlayer(-1, 0)"><i class="fas fa-arrow-left"></i></button>
+                <button class="control-btn bg-red-600 border-red-700" onclick="placeBomb()"><i class="
+                                                                                                
