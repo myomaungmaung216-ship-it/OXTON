@@ -15,15 +15,17 @@
         .nav-btn.active { color: #4fd1c5; }
         .shop-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 20px; padding: 15px; margin-bottom: 12px; }
         .vip-tag { background: linear-gradient(90deg, #f59e0b, #d97706); color: white; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+        .topup-card { background: linear-gradient(135deg, #1d4ed8, #1e40af); border-radius: 20px; padding: 20px; text-align: center; border: 1px solid #3b82f6; }
     </style>
 </head>
 <body>
 
     <!-- Header -->
     <div class="p-5 flex justify-between items-center sticky top-0 bg-[#0b1a2d] z-10">
-        <div class="flex gap-4">
-            <div class="text-center"><p class="text-[9px] text-gray-500">USER</p><p class="font-bold text-teal-400" id="userScore">0</p></div>
-            <div class="text-center"><p class="text-[9px] text-gray-500">BOT</p><p class="font-bold text-red-400" id="botScore">0</p></div>
+        <div class="flex gap-4 text-center">
+            <div><p class="text-[9px] text-gray-500 uppercase">You</p><p class="font-bold text-teal-400" id="userScore">0</p></div>
+            <div class="text-gray-700 font-bold">|</div>
+            <div><p class="text-[9px] text-gray-500 uppercase">Bot</p><p class="font-bold text-red-400" id="botScore">0</p></div>
         </div>
         <div class="bg-blue-900/30 border border-blue-500/40 px-4 py-1.5 rounded-full flex items-center gap-2">
             <i class="fas fa-gem text-blue-400 text-sm"></i>
@@ -49,13 +51,13 @@
 
     <!-- STORE PAGE -->
     <div id="store" class="page p-5">
-        <h2 class="text-xl font-bold mb-5 flex items-center gap-2"><i class="fas fa-store text-orange-400"></i> Store</h2>
+        <h2 class="text-xl font-bold mb-5 flex items-center gap-2 text-orange-400"><i class="fas fa-store"></i> Game Shop</h2>
         
         <!-- VIP Card -->
         <div class="shop-card border-orange-500/30">
             <div class="flex justify-between items-start mb-3">
                 <div>
-                    <span class="vip-tag uppercase">Most Popular</span>
+                    <span class="vip-tag uppercase">Special Offer</span>
                     <h3 class="text-lg font-bold mt-1">VIP PASS (30 Days)</h3>
                 </div>
                 <div class="text-right">
@@ -64,38 +66,38 @@
                 </div>
             </div>
             <ul class="text-[11px] text-gray-400 space-y-1 mb-4">
-                <li><i class="fas fa-check text-teal-500 mr-2"></i> 2x Points on every Win</li>
-                <li><i class="fas fa-check text-teal-500 mr-2"></i> No Ads (Instant Rewards)</li>
-                <li><i class="fas fa-check text-teal-500 mr-2"></i> Fast Withdrawal (Instant)</li>
+                <li><i class="fas fa-check text-teal-500 mr-2"></i> 2x Win Rewards</li>
+                <li><i class="fas fa-check text-teal-500 mr-2"></i> Ad-Free Experience</li>
+                <li><i class="fas fa-check text-teal-500 mr-2"></i> Instant Withdrawal</li>
             </ul>
-            <button class="w-full bg-orange-500 py-3 rounded-xl font-bold text-sm shadow-lg shadow-orange-900/20">BUY WITH STARS</button>
+            <button class="w-full bg-orange-500 py-3 rounded-xl font-bold text-sm">BUY WITH STARS</button>
         </div>
 
-        <!-- Point Packs -->
+        <!-- NEW SINGLE TOPUP CARD -->
         <h3 class="text-sm font-bold text-gray-500 mb-3 uppercase">Top Up Points</h3>
-        <div class="grid grid-cols-2 gap-3">
-            <div class="shop-card text-center">
-                <i class="fas fa-gem text-blue-400 mb-2"></i>
-                <p class="text-xs font-bold">0.01 TON</p>
-                <p class="text-[10px] text-gray-500 mb-3">50 Stars</p>
-                <button class="w-full bg-blue-600 py-1.5 rounded-lg text-[10px] font-bold">BUY</button>
+        <div class="topup-card shadow-lg shadow-blue-900/30">
+            <div class="flex justify-center mb-3">
+                <div class="bg-blue-400/20 p-3 rounded-full">
+                    <i class="fas fa-gem text-blue-300 text-3xl"></i>
+                </div>
             </div>
-            <div class="shop-card text-center border-teal-500/30">
-                <i class="fas fa-gem text-blue-400 mb-2"></i>
-                <p class="text-xs font-bold">0.05 TON</p>
-                <p class="text-[10px] text-gray-500 mb-3">200 Stars</p>
-                <button class="w-full bg-teal-600 py-1.5 rounded-lg text-[10px] font-bold">BUY</button>
+            <h3 class="text-xl font-bold mb-1">STARTER PACK</h3>
+            <p class="text-blue-200 text-sm mb-4">Get 0.05 TON Instantly</p>
+            <div class="flex justify-between items-center bg-black/20 p-3 rounded-xl mb-4">
+                <span class="text-xs text-gray-300">Price:</span>
+                <span class="font-bold text-white tracking-wide">100 STARS</span>
             </div>
+            <button class="w-full bg-white text-blue-700 py-3 rounded-xl font-bold text-sm hover:bg-gray-100 transition">PURCHASE NOW</button>
         </div>
     </div>
 
-    <!-- TASKS PAGE -->
+    <!-- TASKS & WALLET REMAIN THE SAME... -->
     <div id="tasks" class="page p-5">
-        <h2 class="text-xl font-bold mb-6">Earn Free TON</h2>
+        <h2 class="text-xl font-bold mb-6">Tasks</h2>
         <div class="space-y-3">
-            <div class="shop-card flex justify-between items-center border-gray-700">
+             <div class="shop-card flex justify-between items-center border-gray-700">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-lg"><i class="fab fa-telegram"></i></div>
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center"><i class="fab fa-telegram"></i></div>
                     <div><p class="text-sm font-bold">Join Channel</p><p class="text-[10px] text-teal-400">+0.001 TON</p></div>
                 </div>
                 <button class="bg-white text-black px-4 py-1.5 rounded-lg font-bold text-[10px]">GO</button>
@@ -103,15 +105,13 @@
         </div>
     </div>
 
-    <!-- WALLET PAGE -->
     <div id="wallet" class="page p-8 text-center">
         <i class="fas fa-wallet text-blue-400 text-6xl mb-4"></i>
         <h1 class="text-5xl font-bold mb-1" id="walletBal">0.0025</h1>
-        <p class="text-gray-500 font-bold mb-8 text-sm uppercase">Available TON</p>
-        <button class="w-full bg-gray-800 text-gray-500 font-bold py-4 rounded-2xl flex justify-between px-6 border border-gray-700">
-            <span>Withdrawal Locked</span><i class="fas fa-lock"></i>
+        <p class="text-gray-500 font-bold mb-8 text-sm uppercase">TON Balance</p>
+        <button class="w-full bg-gray-800 text-gray-500 font-bold py-4 rounded-2xl flex justify-between px-6 border border-gray-700 opacity-50">
+            <span>Withdraw Locked</span><i class="fas fa-lock"></i>
         </button>
-        <p class="text-[10px] text-orange-400 mt-4">Tip: Buy VIP to unlock instant withdrawal!</p>
     </div>
 
     <!-- BOTTOM NAV -->
@@ -192,3 +192,4 @@
     </script>
 </body>
 </html>
+
