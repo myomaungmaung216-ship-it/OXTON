@@ -3,51 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ox TON Pro - Bomber Arena</title>
+    <title>Bomber TON</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0b1a2d; color: white; font-family: sans-serif; user-select: none; overflow: hidden; }
-        .page { display: none; min-height: 100vh; padding-bottom: 90px; }
+        body { background-color: #0b1a2d; color: white; font-family: sans-serif; overflow: hidden; touch-action: manipulation; }
+        .page { display: none; min-height: 100vh; padding-bottom: 100px; }
         .active-page { display: block; }
-        .nav-btn { color: #64748b; font-size: 10px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; }
+        canvas { background: #1c2c3e; display: block; margin: 0 auto; border-radius: 10px; border: 2px solid #334155; max-width: 100%; height: auto; }
+        .nav-btn { color: #64748b; font-size: 10px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-btn.active { color: #4fd1c5; }
-        .shop-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 20px; padding: 15px; margin-bottom: 12px; }
-        
-        /* Bomber Game Styles */
-        #gameCanvas { background-color: #2c3e50; border: 2px solid #34495e; border-radius: 12px; display: block; margin: 10px auto; touch-action: none; }
-        .controls { display: grid; grid-template-cols: repeat(3, 1fr); gap: 10px; width: 150px; margin: 10px auto; }
-        .control-btn { background: #1c2c3e; border: 1px solid #334155; color: white; padding: 15px; border-radius: 12px; font-size: 18px; text-center: center; }
-        .control-btn:active { background: #25384d; transform: scale(0.95); }
+        .ctrl-btn { background: #1e293b; border: 1px solid #334155; border-radius: 12px; height: 55px; width: 60px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .ctrl-btn:active { background: #334155; transform: scale(0.9); }
     </style>
 </head>
 <body>
 
-    
-<div class="p-5 flex justify-between items-center sticky top-0 bg-[#0b1a2d] z-10">
-        <div class="flex gap-4 text-center">
-            <div><p class="text-[9px] text-gray-500 uppercase">You</p><p class="font-bold text-teal-400" id="userScore">0</p></div>
-            <div class="text-gray-700 font-bold">|</div>
-            <div><p class="text-[9px] text-gray-500 uppercase">Status</p><p class="font-bold text-red-400 text-xs" id="gameStatus">PLAYING</p></div>
+    <!-- Header -->
+    <div class="p-4 flex justify-between items-center">
+        <div>
+            <p class="text-[10px] text-gray-500 uppercase">Points</p>
+            <p class="font-bold text-teal-400" id="mainBal">0.0025</p>
         </div>
-        <div class="bg-blue-900/30 border border-blue-500/40 px-4 py-1.5 rounded-full flex items-center gap-2">
-            <i class="fas fa-gem text-blue-400 text-sm"></i>
-            <span class="font-bold text-sm" id="mainBalance">0.0025</span>
+        <div class="bg-blue-900/40 px-4 py-1 rounded-full border border-blue-500/30">
+            <span class="text-xs font-bold text-blue-400"><i class="fas fa-gem mr-1"></i> STORE</span>
         </div>
     </div>
 
-    
-<div id="home" class="page active-page p-4">
-        <h2 class="text-center text-sm font-bold text-gray-400 uppercase mb-2">Bomber Arena</h2>
-        
-        <canvas id="gameCanvas" width="320" height="320"></canvas>
+    <!-- Home/Game Page -->
+    <div id="home" class="page active-page p-4">
+        <canvas id="game" width="300" height="300"></canvas>
 
-        
-<div class="flex justify-center gap-3 mt-4">
-            <div class="controls">
-                <div></div>
-                <button class="control-btn" onclick="movePlayer(0, -1)"><i class="fas fa-arrow-up"></i></button>
-                <div></div>
-                <button class="control-btn" onclick="movePlayer(-1, 0)"><i class="fas fa-arrow-left"></i></button>
-                <button class="control-btn bg-red-600 border-red-700" onclick="placeBomb()"><i class="
-                                                                                                
+        <!-- Controls -->
+        <div class="mt-6 flex flex-col items-center gap-2">
+            <button class="ctrl-btn" onclick="move(0,-1)"><i class="fas fa-arrow-up"></i></button>
+            <div class="flex gap-4">
+                <button class="ctrl-btn" onclick="move(-1,0)"><i class="fas fa-arrow-left"></i></button>
+                <button class="ctrl-btn bg-red-600 border-none w-20 shadow-lg shadow-red-900/40" onclick="dropBomb()">
+                    <i class="fas fa-bomb text-white text-2xl"></i>
+                </button>
+                <button class="ctrl-btn" onclick="move(1,0)"><i class="fas fa-arrow-right"></i></button>
+            </div>
+            <button class="ctrl-btn" onclick="move(0,1)"><i class="fas fa-arrow-down"></i></button>
+        </div>
+    </div>
+
+    <!-- Other Pages (Placeholders) -->
+    <div id="store" class="page p-5 text-center"><h2>Store Coming Soon</h2></div>
+    <div id="tasks" class="page p-5 text-center"><h2>Complete Tasks</h2></div>
+    <div id="wallet" class="page p-5 text-center"><h2>Your Wallet</h2></div>
+
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 w-full bg-[#0b1a2d] border-t border-gray-800 flex py-3">
+        <button onclick="nav('home')" class="nav-btn active" id="n-home"><i class="fas fa-gamepad text-lg"></i>HOME</button>
+        <button onclick="nav('store')" class="nav-btn" id="n-store"><i class="fas fa-store text-lg"></i>STORE</button>
+        <button onclick="nav('tasks')" class="nav-btn" id="n-tasks"><i class="fas fa-check-circle text-lg"></i>TASKS</button>
+        <button onclick="nav('wallet')" class="nav-btn" id="n-wallet"><i class="fas fa-wallet text-lg"></i>WALLET</button>
+    </nav>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        const size = 30; // Grid size
+        let bal = 0.0025;
+
+        let player = { x: 1, y: 1 };
+        let enemy = { x: 8, y: 8 };
+        let bomb = null;
+        let explosion = null;
+
+        // 1 = Wall, 0 = Road
+        const map = [
+            [1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,1,0,0,0,0,1],
+            [1,0,1,0,1,0,1,1,0,1],
+            [1,0,0,0,0,0,0,0,0,1],
+            [1,1,1,0,1,1,0,1,0,1],
+            [1,0,0,0,0,0,0,1,0,1],
+            [1,0,1,1,1,0,1,1,0,1],
+            [1,0,0,0,1,0,0,0,0,1],
+            [1,0,1,0,0,0,1,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        function draw() {
+            ctx.clearRect(0, 0, 300, 300);
+            
+            // Draw Map
+            for(let y=0; y<10; y++) {
+                for(let x=0; x<10; x++) {
+                    if(map[y][x] === 1) {
+                        ctx.fillStyle = '#334155';
+                        ctx.fillRect(x*size, y*size, size-1, size-1);
+                    }
+                }
+            }
+
+            // Draw Enemy
+            ctx.fillStyle = '#f87171';
+            ctx.font = '20px Arial';
+            ctx.fillText('👾', enemy.x*size+4, enemy.y*size+22);
+
+            // Draw Bomb
+            if(bomb) {
+                ctx.fillText('💣', bomb.x*size+4, bomb.y*size+22);
+            }
+
+            // Draw Explosion
+            if(explosion) {
+                ctx.fillStyle = 'rgba(251, 191, 36, 0.6)';
+                ctx.fillRect(explosion.x*size, explosion.y*size, size, size);
+            }
+
+            // Draw Player
+            ctx.fillStyle = '#4fd1c5';
+            ctx.beginPath();
+            ctx.arc(player.x*size+15, player.y*size+15, 10, 0, Math.PI*2);
+            ctx.fill();
+        }
+
+        function move(dx, dy) {
+            let nx = player.x + dx;
+            let ny = player.y + dy;
+            if(map[ny][nx] === 0) {
+                player.x = nx;
+                player.y = ny;
+            }
+            draw();
+        }
+
+        function dropBomb() {
+            if(bomb) return;
+            bomb = { x: player.x, y: player.y };
+            draw();
+            setTimeout(() => {
+                explosion = { x: bomb.x, y: bomb.y };
+                if(bomb.x === enemy.x && bomb.y === enemy.y) {
+                    bal += 0.0010;
+                    document.getElementById('mainBal').innerText = bal.toFixed(4);
+                    respawnEnemy();
+                }
+                bomb = null;
+                draw();
+                setTimeout(() => { explosion = null; draw(); }, 500);
+            }, 1500);
+        }
+
+        function respawnEnemy() {
+            let rx, ry;
+            do {
+                rx = Math.floor(Math.random() * 8) + 1;
+                ry = Math.floor(Math.random() * 8) + 1;
+            } while(map[ry][rx] === 1);
+            enemy = { x: rx, y: ry };
+        }
+
+        function nav(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(id).classList.add('active-page');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('n-'+id).classList.add('active');
+        }
+
+        // Initial Draw
+        window.onload = draw;
+    </script>
+</body>
+</html>
