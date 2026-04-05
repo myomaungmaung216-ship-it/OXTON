@@ -1,172 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bomber TON</title>
+    <title>Bomber Arena Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0b1a2d; color: white; font-family: sans-serif; overflow: hidden; touch-action: manipulation; }
-        .page { display: none; min-height: 100vh; padding-bottom: 100px; }
+        body { background: #0b1a2d; color: white; font-family: sans-serif; margin: 0; overflow: hidden; touch-action: manipulation; }
+        .page { display: none; height: 100vh; }
         .active-page { display: block; }
-        canvas { background: #1c2c3e; display: block; margin: 0 auto; border-radius: 10px; border: 2px solid #334155; max-width: 100%; height: auto; }
-        .nav-btn { color: #64748b; font-size: 10px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .nav-btn.active { color: #4fd1c5; }
-        .ctrl-btn { background: #1e293b; border: 1px solid #334155; border-radius: 12px; height: 55px; width: 60px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        #gCanvas { background: #1c2c3e; display: block; margin: 0 auto; border-radius: 12px; border: 2px solid #334155; }
+        .ctrl-btn { background: #1e293b; border: 1px solid #334155; border-radius: 12px; width: 65px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #4fd1c5; }
         .ctrl-btn:active { background: #334155; transform: scale(0.9); }
+        .bomb-btn { background: #ef4444; color: white; width: 80px; border: none; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <div class="p-4 flex justify-between items-center">
-        <div>
-            <p class="text-[10px] text-gray-500 uppercase">Points</p>
-            <p class="font-bold text-teal-400" id="mainBal">0.0025</p>
-        </div>
-        <div class="bg-blue-900/40 px-4 py-1 rounded-full border border-blue-500/30">
-            <span class="text-xs font-bold text-blue-400"><i class="fas fa-gem mr-1"></i> STORE</span>
-        </div>
+        <div><p class="text-[10px] text-gray-500 uppercase">Balance</p><p class="font-bold text-teal-400" id="balTxt">0.0025</p></div>
+        <div class="bg-blue-900/30 px-4 py-1 rounded-full border border-blue-500/30 text-xs font-bold text-blue-400">BOMBER ARENA</div>
     </div>
 
-    <!-- Home/Game Page -->
     <div id="home" class="page active-page p-4">
-        <canvas id="game" width="300" height="300"></canvas>
+        <canvas id="gCanvas" width="300" height="300"></canvas>
 
-        <!-- Controls -->
-        <div class="mt-6 flex flex-col items-center gap-2">
-            <button class="ctrl-btn" onclick="move(0,-1)"><i class="fas fa-arrow-up"></i></button>
+        <div class="mt-8 flex flex-col items-center gap-2">
+            <button class="ctrl-btn" onclick="m(0,-1)"><i class="fas fa-chevron-up"></i></button>
             <div class="flex gap-4">
-                <button class="ctrl-btn" onclick="move(-1,0)"><i class="fas fa-arrow-left"></i></button>
-                <button class="ctrl-btn bg-red-600 border-none w-20 shadow-lg shadow-red-900/40" onclick="dropBomb()">
-                    <i class="fas fa-bomb text-white text-2xl"></i>
-                </button>
-                <button class="ctrl-btn" onclick="move(1,0)"><i class="fas fa-arrow-right"></i></button>
+                <button class="ctrl-btn" onclick="m(-1,0)"><i class="fas fa-chevron-left"></i></button>
+                <button class="ctrl-btn bomb-btn" onclick="b()"><i class="fas fa-bomb"></i></button>
+                <button class="ctrl-btn" onclick="m(1,0)"><i class="fas fa-chevron-right"></i></button>
             </div>
-            <button class="ctrl-btn" onclick="move(0,1)"><i class="fas fa-arrow-down"></i></button>
+            <button class="ctrl-btn" onclick="m(0,1)"><i class="fas fa-chevron-down"></i></button>
         </div>
     </div>
-
-    <!-- Other Pages (Placeholders) -->
-    <div id="store" class="page p-5 text-center"><h2>Store Coming Soon</h2></div>
-    <div id="tasks" class="page p-5 text-center"><h2>Complete Tasks</h2></div>
-    <div id="wallet" class="page p-5 text-center"><h2>Your Wallet</h2></div>
-
-    <!-- Bottom Nav -->
-    <nav class="fixed bottom-0 w-full bg-[#0b1a2d] border-t border-gray-800 flex py-3">
-        <button onclick="nav('home')" class="nav-btn active" id="n-home"><i class="fas fa-gamepad text-lg"></i>HOME</button>
-        <button onclick="nav('store')" class="nav-btn" id="n-store"><i class="fas fa-store text-lg"></i>STORE</button>
-        <button onclick="nav('tasks')" class="nav-btn" id="n-tasks"><i class="fas fa-check-circle text-lg"></i>TASKS</button>
-        <button onclick="nav('wallet')" class="nav-btn" id="n-wallet"><i class="fas fa-wallet text-lg"></i>WALLET</button>
-    </nav>
 
     <script>
-        const canvas = document.getElementById('game');
+        const canvas = document.getElementById('gCanvas');
         const ctx = canvas.getContext('2d');
-        const size = 30; // Grid size
-        let bal = 0.0025;
+        let bal = 0.0025, px = 1, py = 1, ex = 8, ey = 8, bomb = null, boom = null;
 
-        let player = { x: 1, y: 1 };
-        let enemy = { x: 8, y: 8 };
-        let bomb = null;
-        let explosion = null;
-
-        // 1 = Wall, 0 = Road
         const map = [
             [1,1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,1,0,0,0,0,1],
-            [1,0,1,0,1,0,1,1,0,1],
             [1,0,0,0,0,0,0,0,0,1],
-            [1,1,1,0,1,1,0,1,0,1],
-            [1,0,0,0,0,0,0,1,0,1],
-            [1,0,1,1,1,0,1,1,0,1],
-            [1,0,0,0,1,0,0,0,0,1],
-            [1,0,1,0,0,0,1,0,0,1],
+            [1,0,1,1,0,1,1,1,0,1],
+            [1,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,0,1,1,1,0,1],
+            [1,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,0,1,1,1,0,1],
+            [1,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,0,1,1,1,0,1],
             [1,1,1,1,1,1,1,1,1,1]
         ];
 
         function draw() {
-            ctx.clearRect(0, 0, 300, 300);
-            
-            // Draw Map
+            ctx.fillStyle = '#1c2c3e';
+            ctx.fillRect(0,0,300,300);
+
             for(let y=0; y<10; y++) {
                 for(let x=0; x<10; x++) {
-                    if(map[y][x] === 1) {
+                    if(map[y][x]==1) {
                         ctx.fillStyle = '#334155';
-                        ctx.fillRect(x*size, y*size, size-1, size-1);
+                        ctx.roundRect ? ctx.fillRoundedRect(x*30, y*30, 28, 28, 5) : ctx.fillRect(x*30, y*30, 28, 28);
                     }
                 }
             }
 
-            // Draw Enemy
-            ctx.fillStyle = '#f87171';
-            ctx.font = '20px Arial';
-            ctx.fillText('👾', enemy.x*size+4, enemy.y*size+22);
-
-            // Draw Bomb
-            if(bomb) {
-                ctx.fillText('💣', bomb.x*size+4, bomb.y*size+22);
-            }
-
-            // Draw Explosion
-            if(explosion) {
-                ctx.fillStyle = 'rgba(251, 191, 36, 0.6)';
-                ctx.fillRect(explosion.x*size, explosion.y*size, size, size);
-            }
-
-            // Draw Player
-            ctx.fillStyle = '#4fd1c5';
-            ctx.beginPath();
-            ctx.arc(player.x*size+15, player.y*size+15, 10, 0, Math.PI*2);
-            ctx.fill();
+            if(bomb) { ctx.font='20px Arial'; ctx.fillText('💣', bomb.x*30+5, bomb.y*30+22); }
+            if(boom) { ctx.fillStyle='rgba(255,165,0,0.7)'; ctx.fillRect(boom.x*30, boom.y*30, 30, 30); }
+            
+            // Enemy
+            ctx.font='20px Arial'; ctx.fillText('👾', ex*30+5, ey*30+22);
+            
+            // Player
+            ctx.fillStyle='#4fd1c5'; ctx.beginPath(); ctx.arc(px*30+15, py*30+15, 10, 0, Math.PI*2); ctx.fill();
         }
 
-        function move(dx, dy) {
-            let nx = player.x + dx;
-            let ny = player.y + dy;
-            if(map[ny][nx] === 0) {
-                player.x = nx;
-                player.y = ny;
-            }
+        function m(dx, dy) {
+            if(map[py+dy][px+dx]==0) { px+=dx; py+=dy; }
             draw();
         }
 
-        function dropBomb() {
+        function b() {
             if(bomb) return;
-            bomb = { x: player.x, y: player.y };
-            draw();
+            bomb = {x:px, y:py}; draw();
             setTimeout(() => {
-                explosion = { x: bomb.x, y: bomb.y };
-                if(bomb.x === enemy.x && bomb.y === enemy.y) {
-                    bal += 0.0010;
-                    document.getElementById('mainBal').innerText = bal.toFixed(4);
-                    respawnEnemy();
+                boom = {x:bomb.x, y:bomb.y};
+                if(bomb.x==ex && bomb.y==ey) {
+                    bal += 0.001;
+                    document.getElementById('balTxt').innerText = bal.toFixed(4);
+                    ex = Math.floor(Math.random()*7)+1; ey = Math.floor(Math.random()*7)+1;
                 }
-                bomb = null;
-                draw();
-                setTimeout(() => { explosion = null; draw(); }, 500);
-            }, 1500);
+                bomb = null; draw();
+                setTimeout(() => { boom=null; draw(); }, 400);
+            }, 1000);
         }
 
-        function respawnEnemy() {
-            let rx, ry;
-            do {
-                rx = Math.floor(Math.random() * 8) + 1;
-                ry = Math.floor(Math.random() * 8) + 1;
-            } while(map[ry][rx] === 1);
-            enemy = { x: rx, y: ry };
-        }
-
-        function nav(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById(id).classList.add('active-page');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('n-'+id).classList.add('active');
-        }
-
-        // Initial Draw
-        window.onload = draw;
+        // Force Start Draw
+        setInterval(draw, 100); 
     </script>
 </body>
 </html>
