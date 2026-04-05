@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ox TON Free Earn</title>
+    <title>Ox TON Pro - Earn & Withdraw</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -14,37 +14,37 @@
         .grid-cell:active { transform: scale(0.95); background: #25384d; }
         .nav-btn { color: #64748b; font-size: 10px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-btn.active { color: #4fd1c5; }
-        .withdraw-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 20px; padding: 20px; }
+        .input-box { width: 100%; bg-black/30; border: 1px solid #334155; border-radius: 12px; padding: 12px; font-size: 14px; color: white; outline: none; margin-bottom: 12px; }
+        .input-box:focus { border-color: #4fd1c5; }
     </style>
 </head>
 <body>
 
-    <!-- Top Bar -->
-    <div class="p-5 flex justify-between items-center sticky top-0 bg-[#0b1a2d]/90 backdrop-blur-md z-10">
+    <!-- Header -->
+    <div class="p-5 flex justify-between items-center sticky top-0 bg-[#0b1a2d]/90 backdrop-blur-md z-10 border-b border-gray-800">
         <div class="flex gap-4">
             <div class="text-center">
                 <p class="text-[9px] text-gray-500 uppercase">Win</p>
-                <p class="font-bold text-teal-400" id="userScore">0</p>
+                <p class="font-bold text-teal-400" id="uScore">0</p>
             </div>
             <div class="text-center">
                 <p class="text-[9px] text-gray-500 uppercase">Loss</p>
-                <p class="font-bold text-red-400" id="botScore">0</p>
+                <p class="font-bold text-red-400" id="bScore">0</p>
             </div>
         </div>
         <div class="bg-teal-500/10 border border-teal-500/30 px-4 py-1.5 rounded-full flex items-center gap-2">
             <i class="fas fa-coins text-teal-400 text-sm"></i>
-            <span class="font-bold text-sm text-teal-400" id="mainBalance">0.0025</span>
+            <span class="font-bold text-sm text-teal-400" id="mainBal">0.0025</span>
         </div>
     </div>
 
-    <!-- HOME (OX GAME) -->
+    <!-- PLAY PAGE -->
     <div id="home" class="page active-page p-5">
         <div class="text-center mb-6">
-            <h1 class="text-xl font-bold text-white">Ox Challenge</h1>
-            <p class="text-xs text-gray-400">Win to earn 0.0005 TON</p>
+            <h1 class="text-xl font-bold">Ox Game</h1>
+            <p class="text-xs text-gray-500">Win to get 0.0005 TON</p>
         </div>
-        
-        <div class="grid grid-cols-3 gap-3 mb-8" id="board">
+        <div class="grid grid-cols-3 gap-3" id="board">
             <div class="grid-cell" data-index="0" onclick="tap(0)"></div>
             <div class="grid-cell" data-index="1" onclick="tap(1)"></div>
             <div class="grid-cell" data-index="2" onclick="tap(2)"></div>
@@ -55,39 +55,47 @@
             <div class="grid-cell" data-index="7" onclick="tap(7)"></div>
             <div class="grid-cell" data-index="8" onclick="tap(8)"></div>
         </div>
-        <p id="status" class="text-center text-teal-400 font-bold animate-pulse"></p>
+        <p id="status" class="text-center mt-6 text-teal-400 font-bold h-6"></p>
     </div>
 
     <!-- WITHDRAW PAGE -->
     <div id="wallet" class="page p-6">
-        <h2 class="text-xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-wallet text-teal-400"></i> Withdraw TON</h2>
-        
-        <div class="withdraw-card mb-6">
-            <p class="text-gray-400 text-xs mb-1 uppercase">Available Balance</p>
-            <h3 class="text-4xl font-bold text-white mb-4"><span id="walletBal">0.0025</span> <span class="text-sm text-gray-500">TON</span></h3>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="text-[10px] text-gray-500 block mb-1 ml-1">TON WALLET ADDRESS</label>
-                    <input type="text" placeholder="UQ..." class="w-full bg-black/30 border border-gray-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500">
-                </div>
-                <button onclick="withdraw()" class="w-full bg-teal-500 hover:bg-teal-600 text-black font-extrabold py-4 rounded-xl transition shadow-lg shadow-teal-500/20">
-                    CONFIRM WITHDRAW
-                </button>
-            </div>
+        <div class="text-center mb-8">
+            <i class="fas fa-wallet text-5xl text-teal-400 mb-2"></i>
+            <h2 class="text-2xl font-bold">Withdrawals</h2>
+            <p class="text-xs text-gray-500">Fast & Free Payments</p>
         </div>
 
-        <div class="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl">
-            <p class="text-[11px] text-yellow-500 leading-relaxed">
-                <i class="fas fa-info-circle mr-1"></i> <b>Free User Notice:</b> Withdrawals are processed within 24 hours. Minimum limit: 0.05 TON. No deposit required.
-            </p>
+        <div class="bg-[#1c2c3e] p-5 rounded-2xl border border-gray-700">
+            <p class="text-[10px] text-gray-400 uppercase mb-4 tracking-widest">Withdraw Details</p>
+            
+            <!-- Address Input -->
+            <label class="text-[11px] text-gray-500 ml-1">TON WALLET ADDRESS</label>
+            <input type="text" id="address" placeholder="UQ..." class="input-box bg-slate-900/50 mt-1">
+
+            <!-- Comment Input -->
+            <label class="text-[11px] text-gray-500 ml-1">COMMENT (MEMO) - OPTIONAL</label>
+            <input type="text" id="comment" placeholder="Your Note" class="input-box bg-slate-900/50 mt-1">
+
+            <!-- Amount Input -->
+            <label class="text-[11px] text-gray-500 ml-1">WITHDRAW AMOUNT (TON)</label>
+            <input type="number" id="amount" placeholder="Min: 0.05" class="input-box bg-slate-900/50 mt-1">
+
+            <button onclick="processWithdraw()" class="w-full bg-teal-500 text-black font-extrabold py-4 rounded-xl mt-4 shadow-lg active:scale-95 transition">
+                CONFIRM WITHDRAW
+            </button>
+        </div>
+
+        <div class="mt-6 text-center">
+            <p class="text-[11px] text-gray-500">Minimum withdrawal is <b>0.05 TON</b></p>
+            <p class="text-[11px] text-gray-500 mt-1">No deposit required for first withdrawal.</p>
         </div>
     </div>
 
     <!-- Bottom Nav -->
-    <nav class="fixed bottom-0 w-full bg-[#0b1a2d]/95 backdrop-blur-md border-t border-gray-800 flex py-3 z-20">
+    <nav class="fixed bottom-0 w-full bg-[#0b1a2d]/95 border-t border-gray-800 flex py-3 z-20">
         <button onclick="nav('home')" class="nav-btn active" id="n-home"><i class="fas fa-gamepad text-xl"></i>PLAY</button>
-        <button onclick="nav('wallet')" class="nav-btn" id="n-wallet"><i class="fas fa-money-bill-wave text-xl"></i>WITHDRAW</button>
+        <button onclick="nav('wallet')" class="nav-btn" id="n-wallet"><i class="fas fa-wallet text-xl"></i>WALLET</button>
     </nav>
 
     <script>
@@ -103,18 +111,18 @@
         function tap(i) {
             if(b[i] === "" && active) {
                 play(i, "X");
-                if(!check("X")) {
+                if(!checkWin("X")) {
                     active = false;
-                    setTimeout(bot, 500);
+                    setTimeout(botMove, 500);
                 }
             }
         }
 
-        function bot() {
+        function botMove() {
             let empty = b.map((v, i) => v === "" ? i : null).filter(v => v !== null);
             if(empty.length > 0) {
                 play(empty[Math.floor(Math.random() * empty.length)], "O");
-                check("O");
+                checkWin("O");
                 active = true;
             }
         }
@@ -126,7 +134,7 @@
             el.style.color = s === "X" ? "#4fd1c5" : "#f87171";
         }
 
-        function check(s) {
+        function checkWin(s) {
             const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
             for(let p of wins) {
                 if(b[p[0]]==s && b[p[1]]==s && b[p[2]]==s) { end(s); return true; }
@@ -139,17 +147,16 @@
             active = false;
             if(w === "X") { 
                 uS++; bal += 0.0005; 
-                document.getElementById('status').innerText = "YOU WON! +0.0005 TON"; 
+                document.getElementById('status').innerText = "Winner! +0.0005"; 
             } else if(w === "O") { 
-                bS++; document.getElementById('status').innerText = "BOT WON!"; 
+                bS++; document.getElementById('status').innerText = "Bot Won!"; 
             } else { 
-                document.getElementById('status').innerText = "DRAW!"; 
+                document.getElementById('status').innerText = "Draw!"; 
             }
             
-            document.getElementById('userScore').innerText = uS;
-            document.getElementById('botScore').innerText = bS;
-            document.getElementById('mainBalance').innerText = bal.toFixed(4);
-            document.getElementById('walletBal').innerText = bal.toFixed(4);
+            document.getElementById('uScore').innerText = uS;
+            document.getElementById('bScore').innerText = bS;
+            document.getElementById('mainBal').innerText = bal.toFixed(4);
             setTimeout(reset, 1500);
         }
 
@@ -160,13 +167,38 @@
             active = true;
         }
 
-        function withdraw() {
-            if(bal < 0.05) {
-                alert("Minimum withdraw is 0.05 TON. Keep playing!");
-            } else {
-                alert("Withdraw Request Sent! Please wait 24h.");
+        // WITHDRAW LOGIC
+        function processWithdraw() {
+            const addr = document.getElementById('address').value;
+            const amt = parseFloat(document.getElementById('amount').value);
+            const memo = document.getElementById('comment').value;
+
+            if(!addr || addr.length < 10) {
+                alert("Please enter a valid TON Wallet Address!");
+                return;
             }
+            if(isNaN(amt) || amt < 0.05) {
+                alert("Minimum withdrawal is 0.05 TON!");
+                return;
+            }
+            if(amt > bal) {
+                alert("Insufficient Balance! You only have " + bal.toFixed(4) + " TON.");
+                return;
+            }
+
+            // If everything is OK
+            alert("Withdraw Success!\nAddress: " + addr + "\nAmount: " + amt + " TON\nComment: " + memo + "\nStatus: Processing (24h)");
+            
+            // Deduct balance (Optional: you can deduct it for simulation)
+            bal -= amt;
+            document.getElementById('mainBal').innerText = bal.toFixed(4);
+            
+            // Clear inputs
+            document.getElementById('address').value = "";
+            document.getElementById('amount').value = "";
+            document.getElementById('comment').value = "";
         }
     </script>
 </body>
 </html>
+
